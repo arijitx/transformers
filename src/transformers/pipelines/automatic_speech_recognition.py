@@ -401,10 +401,13 @@ class AutomaticSpeechRecognitionPipeline(ChunkPipeline):
             optional["chunks"] = chunks
 
         extra = defaultdict(list)
+        logits = []
+        for output in model_outputs:
+            logits += output['logits']
         for output in model_outputs:
             output.pop("tokens", None)
-            output.pop("logits", None)
+            # output.pop("logits", None)
             output.pop("is_last", None)
             for k, v in output.items():
                 extra[k].append(v)
-        return {"text": text, **optional, **extra}
+        return {"text": text,"logits":logits, **optional, **extra}
